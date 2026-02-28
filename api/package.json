@@ -1,0 +1,13 @@
+﻿{
+  "name": "housebot-grok-proxy",
+  "version": "1.0.0",
+  "description": "Secure proxy for HouseBot chat to hide Grok API key",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

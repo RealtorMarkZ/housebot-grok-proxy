@@ -1,9 +1,9 @@
 // api/market-stats-1.js
 export default async function handler(req, res) {
   console.log('market-stats-1 called - method:', req.method);
-  console.log('Request body received:', req.body); // Debug: see what client sends
+  console.log('Request body received:', req.body); // Debug incoming data
 
-  // CORS headers (required for browser fetch)
+  // CORS (keep this)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -14,7 +14,6 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    console.warn('Invalid method:', req.method);
     return res.status(405).json({ error: 'Method not allowed – use POST' });
   }
 
@@ -25,14 +24,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing filter parameter' });
   }
 
-  const apiKey = process.env.BUYING_BUDDY_API_KEY; // <-- Correct env var name
+  const apiKey = process.env.BUYING_BUDDY_API_KEY; // <-- Use this standard name!
 
   if (!apiKey) {
-    console.error('Missing BUYING_BUDDY_API_KEY in Vercel env vars');
+    console.error('Missing BUYING_BUDDY_API_KEY env var');
     return res.status(500).json({ error: 'API key not configured on server' });
   }
 
-  console.log('API Key found - attempting Buying Buddy fetch');
+  console.log('API Key loaded - fetching from Buying Buddy');
 
   try {
     const response = await fetch('https://api.buyingbuddy.com/v3/market-stats', {
@@ -44,22 +43,20 @@ export default async function handler(req, res) {
       body: JSON.stringify({ filter })
     });
 
-    console.log('Buying Buddy response status:', response.status);
+    console.log('Buying Buddy status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Buying Buddy API failed:', response.status, errorText);
-      return res.status(response.status).json({ 
-        error: `Buying Buddy API error: ${response.status} - ${errorText}` 
-      });
+      console.error('Buying Buddy error:', response.status, errorText);
+      return res.status(response.status).json({ error: `Buying Buddy error: ${errorText}` });
     }
 
     const data = await response.json();
-    console.log('Buying Buddy data returned:', data);
+    console.log('Success - data:', data);
     return res.status(200).json(data);
 
   } catch (error) {
     console.error('Proxy crashed:', error.message, error.stack);
-    return res.status(500).json({ error: 'Internal proxy error – check Vercel logs' });
+    return res.status(500).json({ error: 'Proxy error' });
   }
 }

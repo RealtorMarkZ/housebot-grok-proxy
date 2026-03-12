@@ -1,26 +1,36 @@
-const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const app = express();
+// api/voice.js – WebSocket proxy for voice
+import httpProxy from 'http-proxy';
 
-// Existing /api/grok for text (HTTP)
-app.use('/api/grok', createProxyMiddleware({
-  target: 'https://api.x.ai/v1/chat/completions',
-  changeOrigin: true,
-  pathRewrite: {'^/api/grok': ''},
-  headers: {
-    'Authorization': `Bearer ${process.env.XAI_API_KEY}`  // Key as env var for security
-  }
-}));
-
-// New /api/voice for voice (WebSocket)
-app.use('/api/voice', createProxyMiddleware({
+const proxy = httpProxy.createProxyServer({
   target: 'wss://api.x.ai/v1/realtime',
   ws: true,
   changeOrigin: true,
-  pathRewrite: {'^/api/voice': ''},
   headers: {
-    'Authorization': `Bearer ${process.env.XAI_API_KEY}`
+    'Authorization': `Bearer ${process.env.GROK_API_KEY}`
   }
-}));
+});
 
-app.listen(process.env.PORT || 3000);
+export default function handler(req, res) {
+  // CORS for WebSocket upgrade
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Handle WebSocket upgrade
+  if (req.headers.upgrade === 'websocket') {
+    proxy.ws(req, req.socket, req.headers);
+  } else {
+    res.status(400).json({ error: 'This endpoint is for WebSocket only' });
+  }
+}
+
+// For Vercel to handle upgrades
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};

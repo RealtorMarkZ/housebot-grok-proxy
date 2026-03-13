@@ -36,7 +36,7 @@ export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  console.log('Voice handler hit: Method', req.method, 'Upgrade header:', req.headers.upgrade);
+  console.log('Voice handler hit: Method', req.method, 'Upgrade header:', req.headers.upgrade || 'none', 'Connection header:', req.headers.connection || 'none');
   console.log('Key from env:', process.env.GROK_API_KEY ? 'Set' : 'Missing');
 
   if (req.method === 'OPTIONS') {

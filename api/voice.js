@@ -39,6 +39,8 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
 
+  console.log('Voice handler: Headers', req.headers);  // Log for debug
+
   if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
     wss.handleUpgrade(req, req.socket, Buffer.alloc(0), (ws) => {
       wss.emit('connection', ws, req);

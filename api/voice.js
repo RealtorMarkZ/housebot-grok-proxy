@@ -10,6 +10,7 @@ const proxy = httpProxy.createProxyServer({
   }
 });
 
+// For Vercel to handle upgrades correctly
 export default function handler(req, res) {
   // CORS for upgrade requests
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,12 +21,13 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Handle WebSocket upgrade
-  if (req.headers.upgrade === 'websocket') {
+  // Explicitly handle WebSocket upgrade
+  if (req.headers.upgrade.toLowerCase() === 'websocket') {
     proxy.ws(req, req.socket, req.headers);
-  } else {
-    res.status(400).json({ error: 'This endpoint is for WebSocket only' });
+    return;
   }
+
+  res.status(400).json({ error: 'This endpoint is for WebSocket only' });
 }
 
 export const config = {

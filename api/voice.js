@@ -6,12 +6,11 @@ const proxy = httpProxy.createProxyServer({
   ws: true,
   changeOrigin: true,
   headers: {
-    'Authorization': `Bearer ${process.env.GROK_API_KEY}`  // Your key from env vars
+    'Authorization': `Bearer ${process.env.GROK_API_KEY}`
   }
 });
 
 export default function handler(req, res) {
-  // CORS for upgrade requests
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -20,9 +19,11 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Handle WebSocket upgrade (with null check to avoid crash)
   if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
-    proxy.ws(req, req.socket, req.headers);
+    // Explicit upgrade for Vercel
+    req.socket.server.handleUpgrade(req, req.socket, Buffer.alloc(0), (ws) => {
+      proxy.ws(req, ws, req.headers);
+    });
     return;
   }
 

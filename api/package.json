@@ -2,7 +2,7 @@
   "name": "housebot-grok-proxy",
   "version": "1.0.0",
   "type": "module",
-  "private": true
+  "private": true,
   "dependencies": {
   "http-proxy": "^1.18.1"  // Or latest version
 }

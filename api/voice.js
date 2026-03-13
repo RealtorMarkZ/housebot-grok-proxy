@@ -10,7 +10,6 @@ const proxy = httpProxy.createProxyServer({
   }
 });
 
-// For Vercel to handle upgrades correctly
 export default function handler(req, res) {
   // CORS for upgrade requests
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,8 +20,8 @@ export default function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Explicitly handle WebSocket upgrade
-  if (req.headers.upgrade.toLowerCase() === 'websocket') {
+  // Handle WebSocket upgrade (with null check to avoid crash)
+  if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
     proxy.ws(req, req.socket, req.headers);
     return;
   }

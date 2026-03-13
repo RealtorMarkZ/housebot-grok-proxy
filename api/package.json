@@ -1,9 +1,9 @@
 {
-  "name": "housebot-grok-proxy",
-  "version": "1.0.0",
-  "type": "module",
-  "private": true,
-  "dependencies": {
-    "http-proxy": "^1.18.1"  // No comma if last
-  }
+"name": "housebot-grok-proxy",
+"version": "1.0.0",
+"type": "module",
+"private": true,
+"dependencies": {
+"http-proxy": "^1.18.1"
+}
 }

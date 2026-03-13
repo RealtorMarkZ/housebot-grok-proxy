@@ -4,5 +4,6 @@
   "type": "module",
   "private": true,
   "dependencies": {
-  "http-proxy": "^1.18.1"  // Or latest version
+    "http-proxy": "^1.18.1"  // No comma if last
+  }
 }

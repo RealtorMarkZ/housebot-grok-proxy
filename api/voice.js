@@ -44,7 +44,7 @@ export default function handler(req, res) {
   }
 
   if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
-    console.log('Upgrading to WebSocket');
+    console.log('Upgrade requested');
     wss.handleUpgrade(req, req.socket, Buffer.alloc(0), (ws) => {
       wss.emit('connection', ws, req);
     });

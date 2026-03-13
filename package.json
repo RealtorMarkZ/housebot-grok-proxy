@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/RealtorMarkZ/housebot-grok-proxy#readme",
   "dependencies": {
-    "http-proxy": "^1.18.1"
+    "http-proxy": "^1.18.1",
+    "ws": "^8.19.0"
   }
 }

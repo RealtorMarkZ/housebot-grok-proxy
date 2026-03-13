@@ -1,0 +1,24 @@
+{
+  "name": "housebot-grok-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RealtorMarkZ/housebot-grok-proxy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RealtorMarkZ/housebot-grok-proxy/issues"
+  },
+  "homepage": "https://github.com/RealtorMarkZ/housebot-grok-proxy#readme",
+  "dependencies": {
+    "http-proxy": "^1.18.1"
+  }
+}

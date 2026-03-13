@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 const wss = new WebSocketServer({ noServer: true });
 
 wss.on('connection', (clientWs) => {
+  console.log('Client connected to proxy');
   const serverWs = new WebSocket('wss://api.x.ai/v1/realtime', {
     headers: {
       'Authorization': `Bearer ${process.env.GROK_API_KEY}`
@@ -35,13 +36,15 @@ export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
+  console.log('Voice handler hit: Method', req.method, 'Upgrade header:', req.headers.upgrade);
+  console.log('Key from env:', process.env.GROK_API_KEY ? 'Set' : 'Missing');
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  console.log('Voice handler: Headers', req.headers);  // Log for debug
-
   if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
+    console.log('Upgrading to WebSocket');
     wss.handleUpgrade(req, req.socket, Buffer.alloc(0), (ws) => {
       wss.emit('connection', ws, req);
     });

@@ -20,10 +20,9 @@ export default function handler(req, res) {
   }
 
   if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
-    // Explicit upgrade for Vercel
-    req.socket.server.handleUpgrade(req, req.socket, Buffer.alloc(0), (ws) => {
-      proxy.ws(req, ws, req.headers);
-    });
+    // Log for debug
+    console.log('Upgrading to WebSocket');
+    proxy.ws(req, req.socket, req.headers);
     return;
   }
 
@@ -35,3 +34,8 @@ export const config = {
     bodyParser: false
   }
 };
+
+// Explicit upgrade listener for Vercel
+export function onUpgrade(req, socket, head) {
+  proxy.ws(req, socket, head);
+}
